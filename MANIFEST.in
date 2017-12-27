@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include review_tracker *.css
+recursive-include review_tracker *.csv
+recursive-include review_tracker *.html
+recursive-include review_tracker *.ico
+recursive-include review_tracker *.js
+recursive-include review_tracker *.json
+recursive-include review_tracker *.md
+recursive-include review_tracker *.png
+recursive-include review_tracker *.py
+recursive-include review_tracker *.svg
+recursive-include review_tracker *.txt
+recursive-exclude review_tracker *.pyc
