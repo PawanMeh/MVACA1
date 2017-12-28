@@ -1,0 +1,38 @@
+[
+ {
+  "docstatus": 0, 
+  "doctype": "Custom Script", 
+  "dt": "Sales Invoice", 
+  "modified": "2017-12-27 11:46:26.567246", 
+  "name": "Sales Invoice-Client", 
+  "script": "frappe.ui.form.on(\"Sales Invoice\", {\n\trefresh: function(frm,cdt,cdn) {\n\t\tif(frm.doc.docstatus == 1) {\n\t\t\tfrm.add_custom_button(__('Review'), function() {\n\t\t\t\tfrm.events.sales_invoice(frm)\n\t\t\t}, __(\"Make\"));\n\t\t}\n\t},\n\tsales_invoice: function(frm){\n\t\tfrappe.call({\n\t\t\tmethod: \"review_tracker.custom_method.make_si_review\",\n\t\t\targs:{\n\t\t\t\tdocname: frm.doc.name\n\t\t\t},\n\t\t\tcallback: function(r){\n\t\t\t\tvar doc = frappe.model.sync(r.message);\n\t\t\t\tfrappe.set_route('Form', 'Sales Invoice Review', r.message.name);\n\t\t\t}\n\t\t});\n\t}\n});", 
+  "script_type": "Client"
+ }, 
+ {
+  "docstatus": 0, 
+  "doctype": "Custom Script", 
+  "dt": "Purchase Invoice", 
+  "modified": "2017-12-27 11:45:38.694380", 
+  "name": "Purchase Invoice-Client", 
+  "script": "frappe.ui.form.on(\"Purchase Invoice\", {\n\trefresh: function(frm,cdt,cdn) {\n\t\tif(frm.doc.docstatus == 1) {\n\t\t\tfrm.add_custom_button(__('Review'), function() {\n\t\t\t\tfrm.events.purchase_invoice(frm)\n\t\t\t}, __(\"Make\"));\n\t\t}\n\t},\n\tpurchase_invoice: function(frm){\n\t\tfrappe.call({\n\t\t\tmethod: \"review_tracker.custom_method.make_pi_review\",\n\t\t\targs:{\n\t\t\t\tdocname: frm.doc.name\n\t\t\t},\n\t\t\tcallback: function(r){\n\t\t\t\tvar doc = frappe.model.sync(r.message);\n\t\t\t\tfrappe.set_route('Form', 'Purchase Invoice Review', r.message.name);\n\t\t\t}\n\t\t});\n\t}\n});", 
+  "script_type": "Client"
+ }, 
+ {
+  "docstatus": 0, 
+  "doctype": "Custom Script", 
+  "dt": "Journal Entry", 
+  "modified": "2017-12-27 11:47:15.636626", 
+  "name": "Journal Entry-Client", 
+  "script": "frappe.ui.form.on(\"Journal Entry\", {\n\trefresh: function(frm,cdt,cdn) {\n\t\tif(frm.doc.docstatus == 1) {\n\t\t\tfrm.add_custom_button(__('Review'), function() {\n\t\t\t\tfrm.events.journal_entry(frm)\n\t\t\t}, __(\"Make\"));\n\t\t}\n\t},\n\tjournal_entry: function(frm){\n\t\tfrappe.call({\n\t\t\tmethod: \"review_tracker.custom_method.make_je_review\",\n\t\t\targs:{\n\t\t\t\tdocname: frm.doc.name\n\t\t\t},\n\t\t\tcallback: function(r){\n\t\t\t\tvar doc = frappe.model.sync(r.message);\n\t\t\t\tfrappe.set_route('Form', 'Journal Entry Review', r.message.name);\n\t\t\t}\n\t\t});\n\t}\n});", 
+  "script_type": "Client"
+ }, 
+ {
+  "docstatus": 0, 
+  "doctype": "Custom Script", 
+  "dt": "Payment Entry", 
+  "modified": "2017-12-27 11:48:08.201444", 
+  "name": "Payment Entry-Client", 
+  "script": "frappe.ui.form.on(\"Payment Entry\", {\n\trefresh: function(frm,cdt,cdn) {\n\t\tif(frm.doc.docstatus == 1) {\n\t\t\tfrm.add_custom_button(__('Review'), function() {\n\t\t\t\tfrm.events.payment_entry(frm)\n\t\t\t}, __(\"Make\"));\n\t\t}\n\t},\n\tpayment_entry: function(frm){\n\t\tfrappe.call({\n\t\t\tmethod: \"review_tracker.custom_method.make_pe_review\",\n\t\t\targs:{\n\t\t\t\tdocname: frm.doc.name\n\t\t\t},\n\t\t\tcallback: function(r){\n\t\t\t\tvar doc = frappe.model.sync(r.message);\n\t\t\t\tfrappe.set_route('Form', 'Payment Entry Review', r.message.name);\n\t\t\t}\n\t\t});\n\t}\n});", 
+  "script_type": "Client"
+ }
+]
