@@ -10,7 +10,7 @@ def make_pi_review(docname):
 	pi = frappe.get_doc("Purchase Invoice", docname)
 	pir = frappe.new_doc("Purchase Invoice Review")
 	pir.purchase_invoice = pi.name
-	pir.bill_date = pi.posting_date
+	pir.posting_date = pi.posting_date
 	pir.review = "No"
 	table = "review_checklist"
 	rev_question_detail = list(frappe.db.sql("""select question
@@ -26,7 +26,7 @@ def make_si_review(docname):
 	si = frappe.get_doc("Sales Invoice", docname)
 	sir = frappe.new_doc("Sales Invoice Review")
 	sir.sales_invoice = si.name
-	sir.bill_date = si.posting_date
+	sir.posting_date = si.posting_date
 	sir.review = "No"
 	table = "review_checklist"
 	rev_question_detail = list(frappe.db.sql("""select question
@@ -42,7 +42,7 @@ def make_je_review(docname):
 	je = frappe.get_doc("Journal Entry", docname)
 	jer = frappe.new_doc("Journal Entry Review")
 	jer.journal_entry = je.name
-	jer.je_date = je.posting_date
+	jer.posting_date = je.posting_date
 	jer.review = "No"
 	table = "review_checklist"
 	rev_question_detail = list(frappe.db.sql("""select question
@@ -58,7 +58,7 @@ def make_pe_review(docname):
 	pe = frappe.get_doc("Payment Entry", docname)
 	per = frappe.new_doc("Payment Entry Review")
 	per.payment_entry = pe.name
-	per.pe_date = pe.posting_date
+	per.posting_date = pe.posting_date
 	per.review = "No"
 	table = "review_checklist"
 	rev_question_detail = list(frappe.db.sql("""select question

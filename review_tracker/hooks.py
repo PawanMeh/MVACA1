@@ -119,4 +119,3 @@ app_license = "MIT"
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "review_tracker.event.get_events"
 # }
-
