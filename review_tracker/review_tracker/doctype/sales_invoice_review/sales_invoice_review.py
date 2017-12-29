@@ -27,6 +27,8 @@ class SalesInvoiceReview(Document):
 			self.set(table, [])
 			for d in rev_question_detail:
 				self.append(table, d)
+			for d in self.review_checklist:
+				d.review = "No"
 		else:
 			if self.review_checklist:
 				pass
@@ -38,6 +40,8 @@ class SalesInvoiceReview(Document):
 				self.set(table, [])
 				for d in rev_question_detail:
 					self.append(table, d)
+				for d in self.review_checklist:
+					d.review = "No"
 
 		name_check = frappe.db.sql("""select name from `tabSales Invoice Review` where name = %s""",(self.name))
 		if name_check:
@@ -46,13 +50,17 @@ class SalesInvoiceReview(Document):
 			self.sir_date = frappe.utils.nowdate()
 
 	def before_save(self):
-		frappe.db.sql("""update `tabSales Invoice` 
-						set sir_status = "Initiated" 
-						where name = %s""",self.sales_invoice)
+		self.sir_date = frappe.utils.nowdate()
+		if self.docstatus == 0:
+			frappe.db.sql("""update `tabSales Invoice` 
+							set sir_status = "Initiated" 
+							where name = %s""",self.sales_invoice)
 
 	def on_submit(self):
 		self.sir_date = frappe.utils.nowdate()
-		self.sir_status = "Done"
+		frappe.db.sql("""update `tabSales Invoice Review` 
+						set sir_status = "Done" 
+						where name = %s""",self.name)
 		for d in self.review_checklist:
 			if d and (d.review == "No" or not d.review):
 				frappe.throw(_("Review checklist should be set to 'Yes' or 'NA' before submitting"))

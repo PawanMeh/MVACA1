@@ -27,6 +27,8 @@ class JournalEntryReview(Document):
 			self.set(table, [])
 			for d in rev_question_detail:
 				self.append(table, d)
+			for d in self.review_checklist:
+				d.review = "No"
 		else:
 			if self.review_checklist:
 				pass
@@ -38,6 +40,8 @@ class JournalEntryReview(Document):
 				self.set(table, [])
 				for d in rev_question_detail:
 					self.append(table, d)
+				for d in self.review_checklist:
+					d.review = "No"
 
 		name_check = frappe.db.sql("""select name from `tabJournal Entry Review` where name = %s""",(self.name))
 		if name_check:
@@ -46,13 +50,17 @@ class JournalEntryReview(Document):
 			self.jer_date = frappe.utils.nowdate()
 
 	def before_save(self):
-		frappe.db.sql("""update `tabJournal Entry` 
-						set jer_status = "Initiated" 
-						where name = %s""",self.journal_entry)
+		self.jer_date = frappe.utils.nowdate()
+		if self.docstatus == 0:
+			frappe.db.sql("""update `tabJournal Entry` 
+							set jer_status = "Initiated" 
+							where name = %s""",self.journal_entry)
 
 	def on_submit(self):
 		self.jer_date = frappe.utils.nowdate()
-		self.jer_status = "Done"
+		frappe.db.sql("""update `tabJournal Entry Review` 
+						set jer_status = "Done" 
+						where name = %s""",self.name)
 		for d in self.review_checklist:
 			if d and (d.review == "No" or not d.review):
 				frappe.throw(_("Review checklist should be set to 'Yes' or 'NA' before submitting"))
