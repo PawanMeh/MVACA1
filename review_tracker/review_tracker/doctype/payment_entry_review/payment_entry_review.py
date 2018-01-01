@@ -19,7 +19,7 @@ class PaymentEntryReview(Document):
 				else:
 					frappe.throw(_("Duplicate Payment Entry already exists on : {0}").format(name))
 
-		if self.get("__islocal") == 1:
+		if self.get("__islocal") == 1 and not self.review_checklist:
 			table = "review_checklist"
 			rev_question_detail = list(frappe.db.sql("""select question
 								from `tabReview Question Detail`
@@ -50,11 +50,14 @@ class PaymentEntryReview(Document):
 			self.per_date = frappe.utils.nowdate()
 
 	def before_save(self):
+		for d in self.review_checklist:
+			if d and (d.review == "No"):
+				frappe.throw(_("Review checklist should be set to 'Yes', 'NA' or 'Not Sure' before saving"))
 		self.per_date = frappe.utils.nowdate()
 		if self.docstatus == 0:
 			frappe.db.sql("""update `tabPayment Entry` 
-							set per_status = "Initiated" 
-							where name = %s""",self.payment_entry)
+							set per_status = "Initiated", per = %s
+							where name = %s""",(self.name,self.payment_entry))
 
 	def on_submit(self):
 		self.per_date = frappe.utils.nowdate()
@@ -62,7 +65,7 @@ class PaymentEntryReview(Document):
 						set per_status = "Done" 
 						where name = %s""",self.name)
 		for d in self.review_checklist:
-			if d and (d.review == "No" or not d.review):
+			if d and (d.review == "No" or d.review == "Not Sure" or not d.review):
 				frappe.throw(_("Review checklist should be set to 'Yes' or 'NA' before submitting"))
 		doc = frappe.get_doc("Payment Entry",self.payment_entry)
 		doc.per_status = "Done"

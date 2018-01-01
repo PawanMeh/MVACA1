@@ -19,7 +19,7 @@ class SalesInvoiceReview(Document):
 				else:
 					frappe.throw(_("Duplicate Sales Inovice already exists on : {0}").format(name))
 
-		if self.get("__islocal") == 1:
+		if self.get("__islocal") == 1 and not self.review_checklist:
 			table = "review_checklist"
 			rev_question_detail = list(frappe.db.sql("""select question
 								from `tabReview Question Detail`
@@ -50,11 +50,14 @@ class SalesInvoiceReview(Document):
 			self.sir_date = frappe.utils.nowdate()
 
 	def before_save(self):
+		for d in self.review_checklist:
+			if d and (d.review == "No"):
+				frappe.throw(_("Review checklist should be set to 'Yes', 'NA' or 'Not Sure' before saving"))
 		self.sir_date = frappe.utils.nowdate()
 		if self.docstatus == 0:
 			frappe.db.sql("""update `tabSales Invoice` 
-							set sir_status = "Initiated" 
-							where name = %s""",self.sales_invoice)
+							set sir_status = "Initiated",sir = %s 
+							where name = %s""",(self.name,self.sales_invoice))
 
 	def on_submit(self):
 		self.sir_date = frappe.utils.nowdate()
@@ -62,7 +65,7 @@ class SalesInvoiceReview(Document):
 						set sir_status = "Done" 
 						where name = %s""",self.name)
 		for d in self.review_checklist:
-			if d and (d.review == "No" or not d.review):
+			if d and (d.review == "No" or d.review == "Not Sure" or not d.review):
 				frappe.throw(_("Review checklist should be set to 'Yes' or 'NA' before submitting"))
 		doc = frappe.get_doc("Sales Invoice",self.sales_invoice)
 		doc.sir_status = "Done"
