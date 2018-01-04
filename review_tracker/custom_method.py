@@ -72,3 +72,8 @@ def make_pe_review(docname):
 	for d in per.review_checklist:
 		d.review = "No"
 	return per.as_dict()
+
+def validate_je(self,method):
+	for d in self.accounts:
+		if d.account == "120-36 Employee Payable - WRII" and not d.concur_report_id:
+			frappe.throw(_("Concur Report ID is required for Account: 120-36 Employee Payable"));
