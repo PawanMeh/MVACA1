@@ -33,6 +33,12 @@ def get_columns():
 			"width": 180
 		},
 		{
+			"label": _("Party Name"),
+			"fieldname": "party",
+			"fieldtype": "Data",
+			"width": 180
+		},
+		{
 			"label": _("Posting Date"),
 			"fieldname": "date",
 			"fieldtype": "Date",
@@ -67,22 +73,22 @@ def get_file_data(filters):
 		conditions += " and date(posting_date) <= %(to_date)s"
 
 	data = frappe.db.sql("""select company as "company", 'Sales Invoice' as "voucher_type",
-									name as "voucher_no", posting_date as "date"
+									name as "voucher_no", customer_name as "party", posting_date as "date"
 							from `tabSales Invoice`
 							where docstatus in ('1','2') {conditions}
 							union
 							select company as "company", 'Purchase Invoice' as "voucher_type",
-									name as "voucher_no", posting_date as "date"
+									name as "voucher_no", supplier_name as "party", posting_date as "date"
 							from `tabPurchase Invoice`
 							where docstatus in ('1','2') {conditions}
 							union
 							select company as "company", 'Payment Entry' as "voucher_type",
-									name as "voucher_no", posting_date as "date"
+									name as "voucher_no", party_name as "party", posting_date as "date"
 							from `tabPayment Entry`
 							where docstatus in ('1','2') {conditions}
 							union
 							select company as "company", 'Journal Entry' as "voucher_type",
-									name as "voucher_no", posting_date as "date"
+									name as "voucher_no", ' ' as "party", posting_date as "date"
 							from `tabJournal Entry`
 							where docstatus in ('1','2') {conditions}
 							""".format(conditions=conditions), filters, as_dict=1)
