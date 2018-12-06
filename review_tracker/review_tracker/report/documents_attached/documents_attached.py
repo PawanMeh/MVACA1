@@ -49,6 +49,12 @@ def get_columns():
 			"fieldname": "no_attachments",
 			"fieldtype": "Int",
 			"width": 150
+		},
+		{
+			"label": _("File Name"),
+			"fieldname": "file_name",
+			"fieldtype": "Data",
+			"width": 500
 		}
 	]
 	return columns
@@ -83,26 +89,20 @@ def get_file_data(filters):
 	dl=list(data)
 	data = []
 	for row in dl:
-		row["attach_exists"]= get_file_attach_exists(row["voucher_type"], row["voucher_no"])
-		row["no_attachments"]= get_file_attach_no(row["voucher_type"], row["voucher_no"])
+		attach_data = get_file_attach_no(row["voucher_type"], row["voucher_no"])
+		row["no_attachments"] = attach_data[0]
+		if row["no_attachments"] > 0:
+			row["attach_exists"] = "Yes"
+			row["file_name"] = attach_data[1]
+		else:
+			row["attach_exists"] = "No"
 		data.append(row)
 	return data
 	
-def get_file_attach_exists(voucher_type, voucher_name):
-	attachment_exists = frappe.db.sql("""select 'X'
-										from `tabFile`
-										where attached_to_doctype = %s and attached_to_name = %s
-										and file_size > 0""", 
-										(voucher_type, voucher_name))
-	if attachment_exists:
-		return "Yes"
-	else:
-		return "No"
-	
 def get_file_attach_no(voucher_type, voucher_name):
-	attachment_no = frappe.db.sql("""select count(name) as "Attach Count"
+	attachment_no = frappe.db.sql("""select count(name), GROUP_CONCAT(file_name SEPARATOR ' / ') as "Attach Count"
 										from `tabFile` 
 										where attached_to_doctype = %s and attached_to_name = %s
 										and file_size > 0""", 
 										(voucher_type, voucher_name))
-	return attachment_no[0][0]
+	return [attachment_no[0][0], attachment_no[0][1]]
