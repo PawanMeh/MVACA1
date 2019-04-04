@@ -77,3 +77,7 @@ def validate_je(self,method):
 	for d in self.accounts:
 		if d.account == "120-36 Employee Payable - WRII" and not d.concur_report_id:
 			frappe.throw(_("Concur Report ID is required for Account: 120-36 Employee Payable"));
+
+def validate_pi(self, method):
+	if self.base_rounded_total > 0:
+		self.amt_after_adj_adv_and_tds = self.base_rounded_total - self.self.advance_adj

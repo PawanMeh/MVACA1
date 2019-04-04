@@ -89,6 +89,9 @@ app_license = "MIT"
 doc_events = {
 	"Journal Entry": {
 		"validate": "review_tracker.custom_method.validate_je"
+	},
+	"Purchase Invoice": {
+		"validate": "review_tracker.custom_method.validate_pi"
 	}
 }
 # Scheduled Tasks
