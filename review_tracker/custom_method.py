@@ -80,4 +80,4 @@ def validate_je(self,method):
 
 def validate_pi(self, method):
 	if self.base_rounded_total > 0:
-		self.amt_after_adj_adv_and_tds = self.base_rounded_total - self.self.advance_adj
+		self.amt_after_adj_adv_and_tds = self.base_rounded_total - self.advance_adj
